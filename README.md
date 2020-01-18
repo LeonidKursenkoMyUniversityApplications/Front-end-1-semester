@@ -1,4 +1,4 @@
-# Front-end-1-semester
+# Front-end
 This repository contains my student projects on the subject of front-end. This repository contains 8 practical works that includes:
 1) LW01 and LW02 performs tasks dedicated to JavaScript;
 2) LW03 performs tasks dedicated to JavaScript, HTML and CSS;

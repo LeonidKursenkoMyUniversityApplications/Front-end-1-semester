@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" data-ng-app="TaskApp">
+<head>
+    <meta charset="utf-8">
+    <title>Task 3</title>
+
+    <link href="Libraries/bootstrap-theme.css" rel="stylesheet" />
+    <link href="Libraries/bootstrap.css" rel="stylesheet" />
+
+    <script src="Libraries/angular.js"></script>
+    <script src="task1/clubs-en.js"></script>
+    <script src="task1/clubs-ru.js"></script>
+    <script src="task1/clubs-ua.js"></script>
+    <script src="championship.js"></script>
+
+    <script>
+        let languages = ["en", "ru", "ua"];
+        let app = angular.module("TaskApp", []);
+
+        app.controller("TaskAppCtrl", function ($scope) 
+        {
+            $scope.languages = languages;
+            $scope.selectedLanguage = $scope.languages[0];
+
+            $scope.showTable = function(country)
+            {
+                $scope.selectedChamp = country;
+                $scope.championship = getChampionship($scope.selectedChamp);
+            };
+
+            $scope.updateLanguage = function()
+            {
+                $scope.champs = getSoccer($scope.selectedLanguage);
+                $scope.selectedChamp = $scope.champs[0];
+                $scope.championship = getChampionship($scope.selectedChamp);
+                $scope.url = "championshipTable.html";
+            };
+            $scope.updateLanguage(); 
+        });
+
+        function getChampionship(country)
+        {
+            return country.clubs.map((currClub) =>
+            {
+                let clubResult = championships.find((club) => club.clubId == currClub.clubId);
+                clubResult.clubName = currClub.club;
+                return clubResult;
+            });
+        }
+
+        function getSoccer(language)
+        {
+            switch (language) {
+                case "en":
+                    return soccerEn;
+                case "ru":
+                    return soccerRu;
+                case "ua":
+                    return soccerUa;
+                default:
+                    return soccerEn;
+            }
+        }
+    </script>
+    <style>
+        div
+        {
+            width: 350px;
+            margin: 10px 10px 10px 10px;
+            padding: 10px 10px 10px 10px;
+        }
+
+        td,th
+        {
+            width: all;
+            padding: 10px 10px 10px 10px;
+            border: 1px solid darkgreen;
+        }
+
+        td:nth-child(n+3),th
+        {
+            text-align: center;
+        }
+
+        th
+        {
+            background-color: lightgray;
+        }
+
+        th:nth-child(4), td:nth-child(4)
+        {
+            color: green;
+        }
+
+        th:nth-child(5), td:nth-child(5)
+        {
+            color: orange;
+        }
+
+        th:nth-child(6), td:nth-child(6)
+        {
+            color: red;
+        }
+
+        th:nth-child(8), td:nth-child(8)
+        {
+            font-weight: bold;
+        }
+
+        tr
+        {
+            background-color: lightgray;
+        }
+        tr:nth-child(odd)
+        {
+            background-color: white;
+        }
+
+        img
+        {
+            width: 30px;
+            height: 30px;
+        }
+
+        table
+        {
+            margin: 10px 10px 10px 10px;
+        }
+
+        select
+        {
+            height: 32px;
+        }
+
+        .right
+        {
+            position: absolute;
+            left: 350px;
+        }
+    </style>
+
+</head>
+<body data-ng-controller="TaskAppCtrl">
+    <div class="right">  
+        <select data-ng-model="selectedLanguage"  
+                ng-change="updateLanguage()"              
+                data-ng-options="language for language in languages"></select>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-default" 
+                data-ng-repeat="country in champs"
+                data-ng-click="showTable(country)">
+                {{country.champ}}
+        </button>
+    </div>
+
+    <table data-ng-switch on="selectedLanguage">
+        <thead data-ng-switch-when="en">
+            <tr>
+                <th>#</th>
+                <th>Club</th>
+                <th>Played</th>
+                <th>Won</th>
+                <th>Drawn</th>
+                <th>Lost</th>
+                <th>For</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <thead data-ng-switch-when="ru">
+            <tr>
+                <th>№</th>
+                <th>Клуб</th>
+                <th>Сыграно</th>
+                <th>Победа</th>
+                <th>Ничья</th>
+                <th>Поражения</th>
+                <th>Забито</th>
+                <th>Очки</th>
+            </tr>
+        </thead>
+        <thead data-ng-switch-when="ua">
+            <tr>
+                <th>№</th>
+                <th>Клуб</th>
+                <th>Зіграно</th>
+                <th>Перемога</th>
+                <th>Нічия</th>
+                <th>Поразка</th>
+                <th>Забито</th>
+                <th>Бали</th>
+            </tr>
+        </thead>
+        <tbody data-ng-include src="url">
+        </tbody>
+    </table>
+   
+</body>
+</html>

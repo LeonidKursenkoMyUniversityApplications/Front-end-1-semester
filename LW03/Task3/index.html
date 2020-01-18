@@ -1,0 +1,105 @@
+﻿<!-- 
+1)  Задание 1. Средствами JS выберите параграф с классом “red” и неупорядоченный список. 
+По нажатию по кнопке “Задание 1” измените цвет шрифта этих элементов на красный. 
+2)  Задание 2. Выберите параграф в элементе “div”. По нажатию по кнопке “Задание 2” измените 
+цвет шрифта параграфа на синий. 
+3)  Задание 3. Выберите фрагмент текста в параграфе, который выделенный тегом “strong”. Этот 
+параграф должен содержать изображение!!! По нажатию по кнопке “Задание 3” измените 
+начертание выделенного фрагмента текста на курсив. 
+4)  Задание 4. Выберите все дочерние элеметы “div” в контейнере с классом “blocks”. По нажатию 
+по кнопке “Задание 4” измените фоновый цвет этих элементов.
+ --> 
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>Задание 3</title>
+        <link href="style.css" rel="stylesheet" />
+        <script>
+        window.addEventListener("load", function()
+        {
+            let button1 = document.querySelector("input[type='button'][value='Задание 1'");
+            button1.addEventListener("click", function()
+            {
+                let elements = document.querySelectorAll("p.red,ul");
+                for(let i = 0; i < elements.length; i++) 
+                {                    
+                    elements[i].style.color = "red";
+                }
+            }, false);
+
+            let button2 = document.querySelector("input[type='button'][value='Задание 2'");
+            button2.addEventListener("click", function()
+            {
+                let elements = document.querySelectorAll("div p");
+                for(let i = 0; i < elements.length; i++) 
+                {                    
+                    elements[i].style.color = "blue";
+                }
+            }, false);
+
+            let button3 = document.querySelector("input[type='button'][value='Задание 3'");
+            button3.addEventListener("click", function()
+            {
+                let elements = document.querySelectorAll("p img~strong");
+                for(let i = 0; i < elements.length; i++) 
+                {                    
+                    elements[i].style.fontStyle = "italic";
+                }
+            }, false);
+
+            let button4 = document.querySelector("input[type='button'][value='Задание 4'");
+            button4.addEventListener("click", function()
+            {
+                let elements = document.querySelectorAll(".blocks div");
+                for(let i = 0; i < elements.length; i++) 
+                {                    
+                    elements[i].style.background = "black";
+                }
+            }, false);
+
+        }, false);
+        </script>
+    </head>
+    <body>
+        <header id="main">
+            <h1>Site title</h1>
+        </header>
+        <section>
+            <nav>
+                <h2>Page settings</h2>
+                <input id="#" type="button" value="Задание 1" /><br />
+                <input id="#" type="button" value="Задание 2" /><br />
+                <input id="#" type="button" value="Задание 3" /><br />
+                <input id="#" type="button" value="Задание 4" /><br />
+            </nav>
+            <article> 
+                <header>
+                    <h2>Post name</h2>
+                </header>
+                <p>
+                    <img src="http://placekitten.com/g/260/125" alt="cat" title="cat" class="cat_1"/>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam <span class="underline">nonummy</span> nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, <strong>quis</strong> nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes.</p>
+                <p class="red">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit.</p>
+                <div>
+                    <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum.</p>
+                </div>
+                <p>Claritas est etiam processus dynamicus, qui sequitur mutationem <span class="underline">consuetudium</span> lectorum. Mirum est notare <strong>quam</strong> littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima.</p>
+                <ul>
+                    <li>Item 1</li>
+                    <li>Item 2</li>
+                    <li>Item 3</li>
+                </ul>
+                <div class="blocks">
+                    <div>
+                        <div></div>
+                    </div>
+                    <div>
+                        <div></div>
+                    </div>
+                </div>
+            </article>
+        </section>
+        <footer>
+            <h3>Footer</h3>
+        </footer>
+    </body>
+</html>

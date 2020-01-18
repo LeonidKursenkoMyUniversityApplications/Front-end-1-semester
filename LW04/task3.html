@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>LR04 Task 3</title>
+    <script src="jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+	
+    $(() =>
+    {
+        $("td")
+        .html("<div class='circle' />")
+        .mouseenter((e)=>
+        {
+            // clear
+            $("td").removeClass("selectedCell selectedRow selectedColumn");
+            $("td div").removeClass("selectedCircle");
+
+            // select            
+            $(e.target).siblings().addClass("selectedRow");
+            // let colIndex;
+            // if($(e.target).is("td"))
+            // {
+            //    colIndex = $(e.target).parent().children().index(e.target) + 1;
+            // }
+            // $(`tr td:nth-child(${colIndex})`).addClass("selectedColumn");
+
+            if($(e.target).is("td"))
+                $(`tr td:nth-child(${$(e.target).prevAll().length + 1})`).addClass("selectedColumn");
+            $(e.target).removeClass("selectedColumn");             
+            $(e.target).addClass("selectedCell");
+            $(e.target).children().addClass("selectedCircle");
+        });
+
+
+    });
+
+    function fillTable()
+    {
+        $("td").html("<div class='circle' />");
+    }
+
+	</script>
+    <style>
+    td 
+    {
+        height: 70px;
+        width: 70px;
+        border: 1px double black;
+        
+    }
+
+    .selectedCell
+    {
+        background: orange;
+    }
+
+    .selectedRow,.selectedColumn
+    {
+        background: yellow;
+    }
+
+    .circle
+    {
+        margin: auto;
+        height: 70%;
+        width: 70%;
+        border-radius: 50%;
+        background: blue;
+    }
+
+    .selectedCircle
+    {
+        background: black;
+    }
+
+    </style>
+</head>
+<body>
+    <table>
+        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+</body>
+</html>

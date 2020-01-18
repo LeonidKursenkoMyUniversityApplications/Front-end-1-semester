@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>Задание 1</title>
+	<script type="text/javascript">
+		let xImage = "url(\"x.png\")";			
+		let zeroImage = "url(\"o.png\")";
+		let gameEndFlag = false;
+
+		window.addEventListener("load", function()
+		{	
+			loadTicTacToe();
+		}, false);
+
+		function loadTicTacToe()
+		{			
+			let button1 = document.getElementById("button1");
+			button1.hidden = false;
+			button1.addEventListener("click", function()
+			{
+				button1.hidden = true;
+				buildField(3);		
+			}, false);
+		}
+
+		function reloadTicTacToe()
+		{
+			if(gameEndFlag == true)
+			{
+				window.localStorage.removeItem("table");
+				return;
+			}
+		    saveTable();			
+		}
+
+		window.addEventListener("unload", function()
+		{		
+			//reloadTicTacToe();
+
+		}, false);
+
+		// Зберегти таблицю
+		function saveTable()
+		{
+			let tds = document.querySelectorAll("td");
+			if(tds.length == 0) return;
+			let arr = new Array(tds.length);
+			for (let i = 0; i < tds.length; i++) 
+			{
+				switch (tds[i].style.backgroundImage) {
+					case xImage:
+						arr[i] = "x"
+						break;
+					case zeroImage:
+						arr[i] = "0"
+						break;
+					default:
+						arr[i] = ""
+						break;
+				}
+			}
+			let tableStr = JSON.stringify(arr);
+			window.localStorage.setItem("table", tableStr);
+		}
+
+		// Завантажити таблицю
+		function loadTable()
+		{			
+			let tableStr = window.localStorage.getItem("table");
+			if(tableStr == null || tableStr == "") return;
+			
+			let arr = JSON.parse(tableStr);
+			let tds = document.querySelectorAll("td");
+			for (let i = 0; i < tds.length; i++) 
+			{
+				tds[i].style.backgroundImage = arr[i];
+				switch (arr[i]) {
+					case "x":
+						tds[i].style.backgroundImage = xImage;
+						break;
+					case "0":
+						tds[i].style.backgroundImage = zeroImage;
+						break;
+				}
+			}
+		}
+
+		// Побудувати поле
+		function buildField(n)
+		{		    
+			let table = document.querySelector("table");
+			if(table == null)
+			{
+				table = document.createElement("table");
+				for(let i = 0; i < n; i++)
+				{
+					let tr = document.createElement("tr");
+					for(let j = 0; j < n; j++)
+					{
+						let td = document.createElement("td");										
+						tr.appendChild(td);
+					}						
+					table.appendChild(tr);
+				}
+			}
+			else
+			{
+				table.hidden = false;
+			}
+			
+			document.body.appendChild(table);
+			loadTable();			
+			addTdClick();			
+		}
+
+		// Додати обробку подій для td
+		function addTdClick()
+		{			
+			let crossGame = new Game();
+			let table = document.querySelector("table");
+			table.addEventListener("click", function(e)
+				{	
+					gameEndFlag = crossGame.isEnd();
+					if(gameEndFlag == true) return;				
+					if(Game.setFigure(e.target, xImage) == true)
+					{
+						gameEndFlag = crossGame.checkResult(xImage);
+						if(gameEndFlag == true) return;						
+						crossGame.aiAction(zeroImage);
+						saveTable();	
+					}				
+				}, false);
+
+
+			// let tds = document.querySelectorAll("td");
+			// tds.forEach(function(td)
+			// {
+			// 	td.addEventListener("click", function()
+			// 	{	
+			// 		gameEndFlag = crossGame.isEnd();
+			// 		if(gameEndFlag == true) return;				
+			// 		if(Game.setFigure(this, xImage) == true)
+			// 		{
+			// 			gameEndFlag = crossGame.checkResult(xImage);
+			// 			if(gameEndFlag == true) return;						
+			// 			crossGame.aiAction(zeroImage);
+			// 			saveTable();	
+			// 		}				
+			// 	}, false);
+			// });
+		}
+
+		// Гра
+		function Game()
+		{
+			this.field = document.querySelectorAll("td");
+		}
+
+		// Встановити фігуру
+		Game.setFigure = function(td, figure)
+		{
+			if(td.style.backgroundImage === "")
+			{
+				td.style.backgroundImage = figure;
+				return true;
+			}
+			return false;
+		};
+
+		// Перевірити чи закінчилася гра
+		Game.prototype.isEnd = function()
+		{
+			return (this.checkResult(xImage) == true || this.checkResult(zeroImage) == true);
+		};
+
+		// Перевірити результат
+		Game.prototype.checkResult = function(figure)
+		{
+			if(this.check(figure) === true) 
+			{
+				if(figure === xImage) output("You win!"); else output("Game over!");				
+				//this.endGame();
+				return true;
+			}
+			if(this.isFree() === false) 
+			{
+				output("Nobody win!");
+				//this.endGame();
+				return true;
+			}
+			return false;
+		};
+
+		// Завершити гру
+		Game.prototype.endGame = function(figure)
+		{
+			let table = document.querySelector("table");
+			document.body.removeChild(table);
+
+			let button1 = document.getElementById("button1");
+			button1.hidden = false; 
+		};
+
+		// Перевірка чи є ряд однакових фігур
+		Game.prototype.check = function(figure)
+		{
+			// true - якщо є ряд однакових фігур
+			// false - якщо немає ряду однакових фігур
+			for(let i = 0; i < 3; i++)
+			{
+				// Перевірка по рядках
+				if(this.checkWin([this.field[3*i], this.field[3*i+1], this.field[3*i+2]], figure) === true) return true;
+				// Перевірка по стовпцях
+				if(this.checkWin([this.field[i], this.field[3+i], this.field[6+i]], figure) === true) return true;
+			}
+			// Перевірка по діагоналі
+			if(this.checkWin([this.field[0], this.field[4], this.field[8]], figure) === true) return true;
+			// Перевірка по зворотній діагоналі
+			if(this.checkWin([this.field[2], this.field[4], this.field[6]], figure) === true) return true;
+			return false;
+		};
+
+		Game.prototype.checkWin = function(arrCells, figure)
+		{
+			// true - якщо є ряд однакових фігур
+			// false - якщо немає ряду однакових фігур			
+			for(let i = 0; i < arrCells.length; i++)
+			{ 				
+				if(arrCells[i].style.backgroundImage !== figure) return false;					
+			}
+			return true;
+		};
+
+		// Перевірка вільних місць
+		Game.prototype.isFree = function()
+		{
+			for(let i = 0; i < this.field.length; i++)
+			{
+				if(this.field[i].style.backgroundImage === "") return true;				
+			}
+			return false;
+		};
+
+		// Дії штучного інтелекту
+		Game.prototype.aiAction = function()
+		{
+			let index = 0;
+			do
+			{
+				index = Math.floor((Math.random() * this.field.length));
+			} while(Game.setFigure(this.field[index], zeroImage) !== true);
+			gameEndFlag = this.checkResult(zeroImage);
+		};
+
+		// Вивід повідомлення
+		function output(message)
+		{
+			let p = document.querySelector("p");
+			if(p == null) p = document.createElement("p");
+			p.innerHTML = message;
+			let body = document.querySelector("body");
+			body.appendChild(p);
+
+			let button = document.querySelector("#restart");
+			if(button == null) button = document.createElement("input");
+			button.type = "button";
+			button.id = "restart";
+			button.value = "Restart";
+			body.appendChild(button);
+			button.addEventListener("click", function()
+				{			
+					let table = document.querySelector("table");
+					document.body.removeChild(table);					
+					document.body.removeChild(p);
+					document.body.removeChild(button);
+					
+					loadTicTacToe();
+				}, false);
+
+			gameEndFlag == true;
+			if(gameEndFlag == true)
+			{
+				window.localStorage.removeItem("table");
+				return;
+			}
+		}
+	</script>
+	<style>
+            table td 
+            {
+            	border: 1px solid black;
+            	width: 160px;
+            	height: 160px;
+            	background-repeat: no-repeat; 
+            	background-size: 100% 100%;
+            }
+    </style>
+</head>
+<body>
+	<!-- 
+	Создайте игру "Крестики-нолики" против компьютера
+	Условия игры:
+	1) Начальное состояние страницы - только кнопка "начать игру"
+	2) При нажатии кнопки рисуется таблица 3х3, кнопка исчезает
+	3) Игрок кликает на произвольном поле таблицы - в этом месте появляется изображение крестика
+	4) В ответ компьютер ставить нолик на не занятое поле
+	5) Игра заканчивается если набрано 3 в ряд. Вывод победителя
+
+	-->
+	
+	<input id="button1" type="button" value="Начать игру" />
+	
+</body>
+</html>

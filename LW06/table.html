@@ -1,0 +1,24 @@
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Club</th>
+            <th>Played</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+            <th>For</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tr data-ng-repeat="clubResult in championship">
+        <td>{{$index + 1}}</td>
+        <td><img ng-src="task1/{{clubResult.clubId}}.png"/>{{clubResult.clubName}}</td>
+        <td>{{clubResult.played}}</td>
+        <td>{{clubResult.won}}</td>
+        <td>{{clubResult.drawn}}</td>
+        <td>{{clubResult.lost}}</td>
+        <td>{{clubResult.for}}</td>
+        <td>{{clubResult.points}}</td>
+    </tr>
+</table>

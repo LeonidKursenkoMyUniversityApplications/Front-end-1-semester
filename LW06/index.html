@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" data-ng-app="TaskApp">
+<head>
+    <meta charset="utf-8">
+    <title>Task 1</title>
+
+    <link href="Libraries/bootstrap-theme.css" rel="stylesheet" />
+    <link href="Libraries/bootstrap.css" rel="stylesheet" />
+
+    <script src="Libraries/angular.js"></script>
+    <script src="task1/clubs.js"></script>
+
+    <script>
+        let app = angular.module("TaskApp", []);
+
+        app.controller("TaskAppCtrl", function ($scope) {
+            $scope.champs = soccer;
+            $scope.selectedChamp = $scope.champs[0];
+            $scope.selectedClub = $scope.selectedChamp.clubs[0];
+        });
+    </script>
+    <style>
+        img
+        {
+            width: 150px;
+            height: 150px;
+        }
+
+        div
+        {
+            width: 300px;
+            margin: 10px 10px 10px 10px;
+            padding: 10px 10px 10px 10px;
+            border: solid 1px gray;
+            border-radius: 5%;
+        }
+
+        .left
+        {
+            position: absolute;
+        }
+        .right
+        {
+            position: absolute;
+            left: 310px;
+        }
+    </style>
+
+</head>
+<body data-ng-controller="TaskAppCtrl">
+    <div class="left">
+        Виберіть країну
+        <select data-ng-model="selectedChamp"
+                ng-change="selectedClub=selectedChamp.clubs[0]"
+                data-ng-options="country.champ for country in champs track by country.champId"></select>
+        <p>Емблема федерації</p>
+        <img ng-src="task1/{{selectedChamp.champId}}.png"/>
+    </div>
+    <div class="right">
+        Виберіть клуб      
+        <select data-ng-model="selectedClub"                
+                data-ng-options="currentClub.club for currentClub in selectedChamp.clubs track by currentClub.clubId"></select>
+        <p>Емблема клуба</p>
+        <img ng-src="task1/{{selectedClub.clubId}}.png"/>
+    </div>
+</body>
+</html>

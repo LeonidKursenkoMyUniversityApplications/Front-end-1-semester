@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>LR04 Task 4</title>
+    <script src="jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+	
+    $(() =>
+    {        
+        let questions = getData();
+        createQuestions(questions);
+        performResult(questions);
+        $(window).on("unload", ()=>
+        {
+            //saveAnswer(questions);
+        });
+        $("#newButton").click(()=>
+        {
+            $(".answer:checked").prop("checked", false);
+            window.localStorage.removeItem("answers");
+            $(`div#pages label`).removeClass("answeredTask");
+        });
+
+    });
+
+    // Дані для тесту
+    function getData()
+    {
+        let questions = 
+        [
+        {
+            question: "Цілочисельний тип даних в С#.",
+            answers: 
+            [
+            "bool",
+            "int",
+            "integer",
+            "float"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "Оператор циклу в С#.",
+            answers: 
+            [
+            "while",
+            "if",
+            "until",
+            "loop"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "Оператор дорівнює в С#.",
+            answers: 
+            [
+            "<>",
+            "!",
+            "!=",
+            "Правильної відповіді немає."
+            ],
+            correctAnswer: 3
+        },
+        {
+            question: "Оператор переривання виконання циклу.",
+            answers: 
+            [
+            "continue",
+            "abort",
+            "exit",
+            "break"
+            ],
+            correctAnswer: 3
+        },
+        {
+            question: "Від якого класу наслідуються всі класи.",
+            answers: 
+            [
+            "Клас Object",
+            "Клас Class",
+            "Клас System",
+            "Правильної відповіді немає"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "Оператор створення об'єкту.",
+            answers: 
+            [
+            "new",
+            "create",
+            "init",
+            "Правильної відповіді немає"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "Який стандартний клас використовується для задання дат?",
+            answers: 
+            [
+            "Клас Date",
+            "Клас DateTime",
+            "Клас Data",
+            "Правильної відповіді немає"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "Який стандартний клас використовується для створення списку?",
+            answers: 
+            [
+            "Клас Array",
+            "Клас List",
+            "Клас Vector",
+            "Правильної відповіді немає"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "Який з перелічених класів не є колекцією?",
+            answers: 
+            [
+            "Клас Stack",
+            "Клас ArrayList",
+            "Клас Vector",
+            "Правильної відповіді немає"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "Як знайти розмір масиву arr?",
+            answers: 
+            [
+            "arr.size",
+            "arr.count",
+            "arr.length",
+            "arr.Count()"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "Коли спрацьовує статичний конструктор?",
+            answers: 
+            [
+            "Під час ініціалізації властивостей об'єкту",
+            "До створенням екземпляру класу",
+            "Перед створенням екземпляру класу або при зверненні до статичних членів класу",
+            "Усі відповіді неправильні"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "Що таке інтерфейси?",
+            answers: 
+            [
+            "Це один з механізмів наслідування",
+            "Реалізація класу",
+            "Оператор для динамічного перетворення екземплярів класу",
+            "Усі відповіді неправильні"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "Чи можна наслідувати від двох і більше класів?",
+            answers: 
+            [
+            "Так",
+            "Ні, наслідування можливе тільки від одного класу",
+            "Ні, тільки від двох",
+            "Усі відповіді неправильні"
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "Як створити абстрактний клас?",
+            answers: 
+            [
+            "За допомогою ключeвого слова abstract",
+            "За допомогою ключeвого слова interface",
+            "За допомогою ключeвого слова struct",
+            "За допомогою ключeвого слова sealed"
+            ],
+            correctAnswer: 0
+        },
+        {
+            question: "Як згенерувати виключення?",
+            answers: 
+            [
+            "За допомогою оператора new",
+            "За допомогою оператора throw",
+            "За допомогою оператора return",
+            "За допомогою оператора try"
+            ],
+            correctAnswer: 1
+        }
+        ];
+        return questions;
+    }
+
+    // Створити питання
+    function createQuestions(questions)
+    {
+        questions.forEach((task, index) =>
+            {
+                $("div#questions").append(`<div id="question${index}" />`);
+                $(`div#question${index}`).append(`<p>${task.question}</p>`);
+                task.answers.forEach((answer, answerIndex) =>
+                {
+                    $(`div#question${index}`)
+                    .append(`<label><input type="radio" class="answer"`+
+                        ` name="question${index}" value="${answerIndex}">` +
+                        `${answer}</label><br>`);
+                });
+            });
+        $(`.answer`).click(() =>
+        {
+            saveAnswer(questions);
+        });
+
+        $(`input.answer`).change((e)=>
+        {
+            if($(e.target).prop("checked") == true)
+            {
+                let questionNum = $(e.target).prop("name");
+                let index = $(`#questions`).children().index($(`#${questionNum}`));
+                $(`div#pages label`).eq(index).addClass("answeredTask");
+            }
+
+        });
+
+        createPages(questions);
+        loadAnswer();
+    }
+
+    // Створити сторінки
+    function createPages(questions)
+    {
+        questions.forEach((task, index) =>
+            {
+                $("div#pages")
+                .append(`<input type="radio" id="task${index}" class="pages" name="pages"` +
+                    ` value="${index}"><label for="task${index}">` +
+                    ` Task ${index + 1}</label>`);                
+            });
+        
+        $(".pages").click((e) =>
+            {
+                let currentIndex = $(e.target).val();
+                $(`div#questions div`).addClass("unvisible");
+                $(`div#question${currentIndex}`).removeClass("unvisible");
+            });
+        $(`.pages:first`).click();
+    }
+
+    // Обробка результатів
+    function performResult(questions)
+    {
+        $("#finishButton").click(() =>
+            {
+                let answers = getAnswers(questions);
+                let results = answers.map((answer, index) =>
+                {
+                    return (answer == questions[index].correctAnswer);
+                });
+                viewResults(results, questions);
+            });
+    }
+
+    // Отримати відповіді користувача
+    function getAnswers(questions)
+    {
+        return questions.map((task, index) =>
+        {
+            let answer = $(`[name="question${index}"]:checked`);
+            return answer.val();
+        });
+    }
+
+    // Показати результати
+    function viewResults(results, questions)
+    {
+        let resultsList = questions.map((task) =>
+            {
+                return `${task.question} Відповідь: ${task.answers[task.correctAnswer]}`;
+            });
+        let trueAnswers = resultsList.filter((result, index)=>
+            {
+                return (results[index] == true);                
+            });
+        let falseAnswers = resultsList.filter((result, index)=>
+            {
+                return (results[index] == false);                
+            });  
+        $(`#pages,#questions,#results`).toggleClass("unvisible");
+        if(trueAnswers.length > 0)
+        {
+            $(`#results`)
+            .append(`<p>Ви правильно відповіли на наступні запитання:</p>`)
+            .append(`<ol></ol>`)
+            .children(`ol`)
+            .append(viewList(trueAnswers));
+        }
+
+        if(falseAnswers.length > 0)
+        {
+            $(`#results`)
+            .append(`<p>Правильні відповіді на запитання на які ви не змогли правильно відповісти:</p>`)
+            .append(`<ol></ol>`)
+            .children(`ol:last`)
+            .append(viewList(falseAnswers));
+        }        
+
+        $(`#results`)
+        .append(`<p>Всього правильних відповідей: ${trueAnswers.length}</p>`)
+        .append(`<p>Всього не правильних відповідей: ${falseAnswers.length}</p>`);       
+    }
+
+    // Показати список відповідей
+    function viewList(answers)
+    {
+        let answersList = answers.map((answer)=>
+        {
+            return `<li>${answer}</li>`;
+        });
+        return answersList.join("<br>");
+    }
+
+    function saveAnswer(questions)
+    {        
+        let answers = getAnswers(questions);
+        let answersStr = JSON.stringify(answers);
+        window.localStorage.setItem("answers", answersStr);
+    }
+
+    function loadAnswer()
+    {
+        let answersStr = window.localStorage.getItem("answers");
+        if(answersStr == null || answersStr == "") return;
+        let answers = JSON.parse(answersStr);
+        for(let i = 0; i < answers.length; i++)
+        {
+            if(answers[i] != null)
+            {
+                $(`input.answer[name="question${i}"][value="${answers[i]}"]`).prop("checked", true);
+                $(`div#pages label`).eq(i).addClass("answeredTask");
+            }
+        }
+
+    }
+    </script>
+    <style>
+        input[type="button"]
+        {
+            width: 95%;
+            height: 25px;
+            margin-bottom: 40px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        #pages label
+        {
+            display: block;
+            height: 25px;
+            text-align: center;          
+        }
+
+        #pages :checked+label
+        {
+            background-color: green;
+            color: red;          
+        }
+
+        #pages label:hover
+        {
+            background-color: blue;
+            color: red;          
+        }
+
+        .pages
+        {
+            display: none;
+        }
+
+        .answer
+        {
+
+        }
+
+        .unvisible
+        {
+            display: none;
+        }
+
+        div#pages
+        {
+            position : fixed;
+            width : 20%;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            background: #FFC;
+            padding: 5px 5px 5px 0px;
+        }
+
+        #questions
+        {
+            position: relative;
+            width : 80%;
+        }
+
+        .answeredTask
+        {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div id="pages">
+        <input id="finishButton" type="button" value="Finish test"/><br>
+        <input id="newButton" type="button" value="New test"/><br>
+    </div>
+    <div id="questions"></div>
+    <div id="results" class="unvisible"></div>
+    
+</body>
+</html>

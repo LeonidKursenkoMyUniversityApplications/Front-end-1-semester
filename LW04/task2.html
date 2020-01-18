@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>LR04 Task 2</title>
+    <script src="jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+	
+    $(() =>
+    {        
+        $("div").mousemove(function(e)
+        {                
+            let $button = $("#taskButton");
+            let btnWidth = $button.outerWidth(true);
+            let btnHeight = $button.outerHeight(true);
+            // Координати центра кнопки                
+            let xBtn = $button.position().left + btnWidth / 2;                
+            let yBtn = $button.position().top + btnHeight / 2;
+            // Координати миші
+            let xMouse = e.offsetX;                
+            let yMouse = e.offsetY;
+            // Відстань від курсора до центра кнопки
+            let distance = Math.sqrt(Math.pow(xBtn - xMouse, 2) + Math.pow(yBtn - yMouse, 2));
+            // Мінімально допустима відстань від миші до центру кнопки
+            let safeDistance = $button.outerWidth(true) + 2;
+
+            if(distance < safeDistance)
+            {
+                let divHeight = $(this).innerHeight();
+                let divWidth = $(this).innerWidth();
+                let dx = 10;
+                let dy = 10;
+                let xBtnOld = xBtn;
+                let yBtnOld = yBtn;
+
+                // Через рівняння по 2 точках
+                if(Math.abs(xBtn - xMouse) < btnWidth / 2)
+                {
+                    yBtn += (yBtn - yMouse > 0) ? dy : -dy;
+                    xBtn = (yBtn - yBtnOld) / (yMouse - yBtnOld) * (xMouse - xBtn) + xBtn;
+                }
+                else 
+                {
+                    xBtn += (xBtn - xMouse > 0) ? dx : -dx;
+                    yBtn = (xBtn - xBtnOld) / (xMouse - xBtnOld) * (yMouse - yBtn) + yBtn;
+                }
+
+                // Якщо кнопка загнана в кут
+                if((xBtn - btnWidth / 2 < 0 || xBtn + btnWidth / 2 > divWidth) &&
+                    (yBtn - btnHeight / 2 < 0 || yBtn + btnHeight / 2 > divHeight))
+                {
+                    xBtn = divWidth / 2;
+                    yBtn = divHeight / 2; 
+                }
+                
+                // Недопустити вихід за межі області
+                if(xBtn - btnWidth / 2 < 0 || xBtn + btnWidth / 2 > divWidth)
+                {
+                    xBtn = (xBtn - btnWidth / 2 < 0) ? btnWidth / 2 : divWidth - btnWidth / 2;
+                    yBtn += (yBtn - yMouse > 0) ? dy : -dy;
+                }         
+                if(yBtn - btnHeight / 2 < 0 || yBtn + btnHeight / 2 > divHeight)
+                {
+                    yBtn = (yBtn - btnHeight / 2 < 0) ? btnHeight / 2 : divHeight - btnHeight / 2;
+                }
+                $button.css(
+                {
+                    top: yBtn - btnHeight / 2 + "px",
+                    left: xBtn - btnWidth / 2 + "px"
+                });
+            }
+        });
+
+
+        $("#taskButton")
+        // .mouseenter(function(e) 
+        //     {        
+        //         let yMax = $(e.target).parent().outerHeight() - $(e.target).outerHeight(true);
+        //         let xMax = $(e.target).parent().outerWidth() - $(e.target).outerWidth(true);                
+        //         $(e.target).css(
+        //         {
+        //             top: getRandomInt(0, yMax) + "px",
+        //             left: getRandomInt(0, xMax) + "px"
+        //         });                
+        //     })
+        .on("click", () =>
+        {
+            alert("You catch button");
+        });
+        
+        // function getRandomInt(min, max)
+        // {
+        //     return Math.floor(Math.random() * (max - min)) + min;
+        // }
+
+    });
+	</script>
+    <style>
+    div 
+    {
+        height: 400px;
+        width: 400px;
+        border: 1px double black;
+        position: relative;
+    }
+
+    #taskButton
+    {
+        position: absolute;
+        left: 50px;
+        top: 50px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+    </style>
+</head>
+<body>
+    <div>
+        <input id="taskButton" type="button" value="Виконати" />
+    </div>	
+</body>
+</html>

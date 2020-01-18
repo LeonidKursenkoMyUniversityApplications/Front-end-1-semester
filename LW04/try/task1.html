@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>LR04 Task 1</title>
+	<script type="text/javascript">
+	function $(querySelectorString)
+    {
+        let tags = document.querySelectorAll(querySelectorString);
+        //if(tags.length == 0) return tags;   
+
+        tags.eq = function(index)
+        {
+            //let tag = null;
+            if(index >= 0 && index < tags.length)
+            {
+                tags = [tags[index]];                
+            }
+            return tags;
+        };
+
+        tags.css = function()
+        {
+            if(typeof arguments[0] === "string")
+            {
+                let attribute = arguments[0];
+                let value = arguments[1];
+                for(let i = 0; i < tags.length; i++)                    
+                    tags[i].style[attribute] = value;
+            } 
+            else if(typeof arguments[0] === "object")
+            {
+                let obj = arguments[0];
+                for(let i = 0; i < tags.length; i++)
+                    for (attribute in obj)                    
+                        tags[i].style[attribute] = obj[attribute];
+            }
+            return tags;
+        };
+
+        return tags;
+    }
+
+    window.onload = () =>
+    {
+        let taskButton = document.getElementById("taskButton");
+        taskButton.onclick = () =>
+        {
+            // $("p").css("color", "red");
+            // $("li").css("color", "violet").css("background-color", "yellow").css("font-style", "italic");
+            // $("#taskButton").css("color", "blue");
+            // $("p").css({color:"white", "background-color":"black"}).css({"font-style": "italic", width: "70px"});
+
+            $("li").eq(2).css("background-color", "red");
+        };
+    };
+	</script>
+</head>
+<body>
+	
+    <div>
+    	<input id="taskButton" type="button" value="Виконати" />
+	</div>
+
+    <ol>
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+        <li>Four</li>
+        <li>Five</li>
+    </ol>
+
+    <p>HELP!!!</p>
+    <p>HELP!!!</p>
+
+</body>
+</html>

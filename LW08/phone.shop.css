@@ -1,0 +1,285 @@
+header
+{
+    overflow: hidden;
+    width: 100%;
+    height: 48px;
+    background: lightgray;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    padding: 5px 5px 5px 5px;
+}
+
+p
+{
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+table
+{
+    width: 90%;
+}
+
+table, td, th
+{
+    border: 1px solid black;
+}
+
+td
+{
+    width: auto;
+}
+
+.productsTable tr td:nth-child(1)
+{
+    text-align: right;
+}
+
+img 
+{
+    display: block;
+    margin: 0 auto;
+}
+
+td img
+{
+    size: stretch;
+    height: 60px;
+}
+
+.viewImage
+{
+    height: 300px;
+    width: auto;
+}
+
+.workSpace
+{
+    margin-top: 48px;
+}
+
+.cartWindow
+{
+    overflow: hidden;
+    background: lightgray;
+    position: fixed;
+    top: 100px;
+    left: 10%;
+    z-index: 99;
+    height: 500px;
+    width: 90%;
+}
+
+.modal
+{
+    width: 80%;
+    margin-left: 10%;
+}
+
+.grid-sizer,
+.grid-item
+{
+    width: 25%;
+}
+
+.grid-item
+{
+    float: left;
+}
+.grid-item:hover
+{
+    background: yellow;
+}
+
+.grid-item img{
+    /*height: 150px;*/
+    /*width: 80%;*/
+}
+
+.grid-border{
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.productName
+{
+    font-weight: bold;
+}
+
+.rating, .center, .price
+{
+    margin: auto;
+    text-align: center;
+}
+
+.countViews
+{
+    font-size: 10px;
+    color: gray;
+}
+
+.totalPrice
+{
+    font-size: 24px;
+}
+
+.price
+{
+    font-size: 24px;
+}
+
+.buyButton
+{
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    background: green;
+    border-color: darkgreen;
+    color: white;
+    font-size: 28px;
+    width: 100%;
+    height: 60px;
+}
+
+.buyButton:hover, .cartButton:hover
+{
+    background: lightgreen;
+    color: black;
+}
+
+.buyButton:active, .cartButton:active
+{
+    background: green;
+    color: gray;
+}
+
+.buyButton[disabled]
+{
+    background: lightgray;
+    color: gray;
+}
+
+.deleteButton
+{
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    background: red;
+    border-color: darkred;
+    color: white;
+    font-size: 28px;
+    width: 100%;
+    height: 60px;
+}
+
+.deleteButton:hover
+{
+    background: yellow;
+    color: black;
+}
+
+.deleteButton:active
+{
+    background: orange;
+    color: red;
+}
+
+.cartButton
+{
+    background: green;
+    border-color: darkgreen;
+    color: white;
+    font-size: 18px;
+    width: 100px;
+    height: 30px;
+}
+
+.left
+{
+    float:left;
+    width: 20%;
+    height: 800px;
+    border: 1px solid black;
+    overflow: hidden;
+    position: fixed;
+    top: 49px;
+    z-index: 100;
+    padding: 5px 5px 5px 5px;
+}
+
+.right
+{
+    float: right;
+    width: 80%;
+}
+
+form .ng-invalid-required.ng-dirty 
+{
+    background-color: lightpink;
+}
+
+form .ng-invalid.ng-dirty 
+{
+    background-color: lightgoldenrodyellow;
+}
+
+form .ng-valid.ng-dirty 
+{
+    background-color: lightgreen;
+}
+
+
+span.summary.ng-invalid 
+{
+    color: red;
+    font-weight: bold;
+}
+
+span.summary.ng-valid 
+{
+    color: green;
+}
+
+div.error 
+{
+    color: red;
+    font-weight: bold;
+}
+
+form .number
+{
+    width:50px;
+}
+
+.numberField
+{
+    width: 50px;
+}
+
+.filterView
+{
+    padding-left: 20px;
+}
+
+.space
+{
+    margin-top: 10px;
+}
+
+.searchInput
+{
+    width: 215px;
+}
+
+.selectField
+{
+    width: 90px;
+}
+
+.selectMethod
+{
+    width: 144px;
+}

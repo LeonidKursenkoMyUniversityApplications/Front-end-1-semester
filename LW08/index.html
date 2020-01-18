@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html data-ng-app="phoneShopApp">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mobile shop</title>
+
+    <script src="Libraries/jquery-3.2.1.min.js"></script>
+    <script src="Libraries/angular.js"></script>
+    <script src="Libraries/bootstrap.min.js"></script>
+    <script src="Libraries/bootstrap-slider.js"></script>
+
+    <link href="Libraries/bootstrap.min.css" rel="stylesheet" />
+    <link href="phone.shop.css" rel="stylesheet" />
+    <link href="Libraries/bootstrap-slider.css" rel="stylesheet">
+
+    <script type="text/data-ng-template" id="cartTemplate">
+        <div id="cartModal" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Кошик</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ваші товари</p>
+                        
+                        <table class="productsTable">
+                            <tr>
+                                <th>№</th>
+                                <th>Фото</th>
+                                <th>Назва</th>
+                                <th>Кількість</th>
+                                <th>Ціна</th>
+                                <th>Дії</th>
+                                <th>Дії</th>
+                            </tr>
+                            <tr data-ng-repeat="product in selectedPhones track by product.id">
+                                <td>{{$index+1}}</td>
+                                <td><img ng-src="{{imagesUrl}}/{{product.id}}.jpg"/></td>
+                                <td>{{product.productName}}</td>
+                                <td>{{product.count}}</td>
+                                <td>{{product.priceUAH}} грн</td>
+                                <td>
+                                    <button id="addButton{{product.id}}" class="buyButton" 
+                                        ng-disabled="isDisabled(product)"
+                                        data-ng-click="buyButtonClick(product)">Додати</button>
+                                </td>
+                                <td>
+                                    <button class="deleteButton" 
+                                        data-ng-click="deleteButtonClick(product)">Видалити</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="totalPrice">Загальна ціна:{{totalPrice}}  грн</p>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" data-dismiss="modal">Закрити</button>
+                        <button class="btn btn-primary"
+                            data-toggle="modal"
+                            data-target="#orderModal"
+                            ng-disabled="totalPrice==0"
+                            data-ng-click="orderButtonClick()">
+                            Оформити замовлення
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script src="shop.js"></script>
+    <script src="priceFilter.js"></script>
+</head>
+<body data-ng-controller="filterCtrl">
+<header>
+    <button id="cartButton" class="cartButton"
+        data-toggle="modal"
+        data-target="#cartModal">
+        Кошик
+    </button>        
+</header>
+
+<section class="filterView left" >
+        <p>Відсортувати по:
+            <select data-ng-model="selectedField" 
+                    ng-change="sortFilterChange()"               
+                    data-ng-options="field.key for field in sortFields" 
+                    class="selectField">
+            </select>
+        </p>
+        <p class="space">Порядок:
+            <select data-ng-model="selectedMethod" 
+                    ng-change="sortFilterChange()"                
+                    data-ng-options="sortMethod.key for sortMethod in sortMethods"
+                    class="selectMethod">
+            </select>
+        </p>
+        <p class="space"><input type="text" ng-model="search" placeholder="Пошук" class="searchInput"></p>
+        <p class="space">Виберіть бренд:</p>
+        <p ng-repeat="brand in brands | filter: filterAvailableBrands">
+            <input type="checkbox"
+                ng-model="brand.selected"  
+                checklist-value="brand.name"> 
+            {{brand.name}}
+        </p>
+        <p class="space">Виберіть ОС:</p>
+        <p ng-repeat="os in operationSystems">
+            <input type="checkbox" 
+                ng-model="os.selected" 
+                checklist-value="os.name"> 
+            {{os.name}}
+        </p>
+        
+        <div class="space">
+            <p>Виберіть ціну:</p>
+            <input id="priceSlider" type="text" class="span2" value=""
+            data-slider-step="100"/> 
+            <p>{{priceRange.min}} - {{priceRange.max}} грн</p> 
+        </div>
+</section>
+
+<section class="workSpace right" data-ng-controller="cartCtrl">
+    <div id="productsView" 
+        data-ng-controller="viewPhonesCtrl" 
+        class="grid">
+        <div id="{{product.id}}" 
+            data-ng-repeat="product in $parent.$parent.filteredProducts = (products | orderBy: orderByParam | filter: search | filter: filterByBrands | filter: filterByOs) | priceFilter : priceRange.min : priceRange.max"
+            class="grid-item grid-border">
+            <p class="productName">{{product.productName}}</p>
+            <img class="viewImage" ng-src="{{imagesUrl}}/{{product.id}}.jpg"/>
+            <p>Бренд: {{product.brandName}}</p>
+            <p>ОС: {{product.operationSystem}}</p>
+            <p>Кількість сім карт: {{product.numSimCard}}</p>
+            <p class="rating">Рейтинг: {{product.productRate}}</p>
+            <p class="countViews center">Кількість переглядів: {{product.countViews}}</p>
+            <p class="price">Ціна: {{product.priceUAH}} грн</p>
+            <div >
+                <button id="buyButton{{product.id}}"
+                    class="buyButton"
+                    ng-disabled="isDisabled(product)"
+                    data-ng-click="buyButtonClick(product)" >
+                    Купити
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Кошик -->
+    <div cart-show ></div>
+    
+</section>
+<section data-ng-controller="phonesOrderCtrl">
+   <!-- Оформлення замовлення -->
+    <div id="orderModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h4 class="modal-title">Оформлення замовлення</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="totalPrice">Загальна ціна:{{totalPrice}}  грн</p>
+                    <form name="orderForm" novalidate ng-submit="addOrder()">
+                        <div class="form-group">
+                            <label>Ім'я:</label>
+                            <input name="userName" type="text" class="form-control" 
+                            required ng-model="user.name">
+                            <div class="error" ng-show="orderForm.userName.$invalid && orderForm.userName.$dirty">
+                                {{getError(orderForm.userName.$error)}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Фамілія:</label>
+                            <input name="userSurname" type="text" class="form-control" 
+                                required ng-model="user.surname">
+                            <div class="error" ng-show="orderForm.userSurname.$invalid && orderForm.userSurname.$dirty">
+                                {{getError(orderForm.userSurname.$error)}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Мобільний телефон:</label>
+                            <input name="userPhone" type="text" class="form-control" 
+                                data-ng-keypress="checkPhoneNumber($event)"
+                                required ng-model="user.phone" data-ng-pattern="phonePattern">
+                            <div class="error" ng-show="orderForm.userPhone.$invalid && orderForm.userPhone.$dirty">
+                                {{getError(orderForm.userPhone.$error)}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input name="userEmail" type="email" class="form-control" 
+                                required ng-model="user.email">
+                            <div class="error" ng-show="orderForm.userEmail.$invalid && orderForm.userEmail.$dirty">
+                                {{getError(orderForm.userEmail.$error)}}
+                            </div>
+                        </div>                      
+                        <label>Виберіть спосіб оплати:</label>
+                        <select data-ng-model="selectedPayType"
+                                data-ng-options="payType for payType in payTypes"></select>
+                        <div data-ng-if="selectedPayType=='Карткою'">
+                            Дані карти:
+                            <div class="form-group">
+                                <label>Номер карти:</label>
+                                <input id="userCardId1" type="text" placeholder="XXXX" class="numberField"
+                                    ng-model="user.card.id1"
+                                    data-ng-keypress="checkIdPart($event, user.card.id1)"
+                                    ng-change="changeFocus(user.card.id1, 2)"
+                                    tabindex="1"
+                                    data-ng-minlength="4"                                
+                                    required>
+                                <input id="userCardId2" type="text" placeholder="XXXX" class="numberField"
+                                    ng-model="user.card.id2"
+                                    data-ng-keypress="checkIdPart($event, user.card.id2)"
+                                    data-ng-minlength="4"
+                                    ng-change="changeFocus(user.card.id2, 3)"
+                                    tabindex="2"
+                                    required>
+                                <input id="userCardId3" type="text" placeholder="XXXX" class="numberField"
+                                    ng-model="user.card.id3"
+                                    data-ng-keypress="checkIdPart($event, user.card.id3)"
+                                    data-ng-minlength="4"
+                                    ng-change="changeFocus(user.card.id3, 4)"
+                                    tabindex="3"
+                                    required>
+                                <input id="userCardId4" type="text" placeholder="XXXX" class="numberField"
+                                    ng-model="user.card.id4"
+                                    data-ng-keypress="checkIdPart($event, user.card.id4)"
+                                    data-ng-minlength="4"
+                                    ng-change="changeFocus(user.card.id4, 5)"
+                                    tabindex="4"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV код:</label>
+                                <input id="userCardCvv" type="password" class="numberField" placeholder="XXX"
+                                    ng-model="user.card.cvv"
+                                    data-ng-keypress="checkCvv($event)" 
+                                    data-ng-minlength="3"
+                                    tabindex="5"
+                                    required >
+                            </div>
+                            Виберіть місяць:
+                            <select ng-model="user.card.month" data-ng-options="m for m in monthes"></select>
+                            Виберіть рік:
+                            <select data-ng-model="user.card.year" data-ng-options="y for y in years"></select>                                
+                        </div>
+                         <div class="modal-footer">
+                            <button class="btn btn-default" data-dismiss="modal">Закрити</button>
+                            <button type="submit" class="btn btn-primary"
+                                ng-disabled="orderForm.$invalid"
+                                data-dismiss="modal"
+                                data-toggle="modal"
+                                data-target="#orderConfirmationModal"
+                                ng-click="addOrder()">Підтвердити</button>
+                        </div>
+                    </form>                    
+                </div>
+               
+            </div>
+        </div>
+    </div> 
+
+    <!-- Підтвердження замовлення -->
+    <div id="orderConfirmationModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h4 class="modal-title">Ваше замовлення прийнято</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>{{user.name}} {{user.surname}}</p>
+                    <p>Email:{{user.email}}</p>
+                    <p>Телефон:{{user.phone}}</p>
+                    <div data-ng-if="selectedPayType=='Карткою'">
+                        <p>Номер картки:{{user.card.id}}</p>
+                        <!-- <p>Дата дії:{{getUserCardDate()}}</p> -->
+                        <p>Дата дії:{{user.card.date}}</p>
+                        <p>CVV код:{{user.card.cvv}}</p>
+                    </div>
+                   <p>Ваші товари</p>
+                    <table class="productsTable">
+                        <tr>
+                            <th>№</th>
+                            <th>Фото</th>
+                            <th>Назва</th>
+                            <th>Кількість</th>
+                            <th>Ціна</th>
+                        </tr>
+                        <tr data-ng-repeat="product in selectedPhones track by product.id">
+                            <td>{{$index+1}}</td>
+                            <td><img ng-src="{{imagesUrl}}/{{product.id}}.jpg"/></td>
+                            <td>{{product.productName}}</td>
+                            <td>{{product.count}}</td>
+                            <td>{{product.priceUAH}} грн</td>
+                        </tr>
+                    </table>
+                    <p class="totalPrice">Загальна ціна:{{totalPrice}}  грн</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary"
+                        data-dismiss="modal"
+                        data-toggle="modal"
+                        data-target="#cartModal">Закрити</button>
+                </div>                
+            </div>
+        </div>
+    </div> 
+</section>
+</body>
+</html>
